@@ -9,6 +9,7 @@
     "less": "ts-node-script ./scripts.ts less",
     "test": "jest",
     "start": "ts-node-script ./scripts.ts start --watch",
+    "start:fast": "ts-node-script ./scripts.ts start:fast",
     "build-ci": "ts-node-script ./scripts.ts build-ci",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "ts-node-script ./scripts.ts storybook:build",

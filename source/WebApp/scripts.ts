@@ -9,6 +9,8 @@ import { manifest } from './scripts/manifest';
 import { html, htmlOutputPath } from './scripts/html';
 import './scripts/storybook';
 
+const port = process.env.PORT ?? '44200';
+
 const dirname = __dirname;
 
 const latest = task('latest', () => jetpack.writeAsync(
@@ -37,8 +39,10 @@ const build = task('build', async () => {
 });
 
 task('start', () => build(), {
-    watch: () => exec2('http-server', [outputSharedRoot, '-p', '44200', '--cors'])
+    watch: () => exec2('http-server', [outputSharedRoot, '-p', port, '--cors'])
 });
+
+task('start:fast', () => exec2('http-server', [outputSharedRoot, '-p', port, '--cors']));
 
 // Assumes we already ran the build
 const zip = task('zip', async () => {

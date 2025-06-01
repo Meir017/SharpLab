@@ -9,7 +9,7 @@ namespace SharpLab.Server.Caching;
 public class CachingModule : Module {
     protected override void Load(ContainerBuilder builder) {
         var webAppName = EnvironmentHelper.GetRequiredEnvironmentVariable("SHARPLAB_WEBAPP_NAME");
-        var branchId = webAppName.StartsWith("sl-") ? webAppName : null;
+        var branchId = webAppName.StartsWith("sl-") ? webAppName : "default";
 
         builder.RegisterType<ResultCacheBuilder>()
                .As<IResultCacheBuilder>()

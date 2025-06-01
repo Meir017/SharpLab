@@ -21,6 +21,7 @@
     <ProjectReference Include="..\#external\Fragile\Fragile\Fragile.csproj" />
     <ProjectReference Include="..\Container.Warmup\Container.Warmup.csproj" />
     <ProjectReference Include="..\Container\Container.csproj" />
+    <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>

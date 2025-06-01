@@ -1,5 +1,6 @@
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using SharpLab.Server.Common;
 
@@ -7,12 +8,19 @@ namespace SharpLab.WebApp.Server {
     public class Program {
         public static void Main(string[] args) {
             DotEnv.Load();
-            CreateHostBuilder(args).Build().Run();
-        }
+            
+            var builder = WebApplication.CreateBuilder(args);
+            builder.AddServiceDefaults();
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+            var startup = new Startup();
+            startup.ConfigureServices(builder.Services);
+            builder.Host.ConfigureContainer<ContainerBuilder>(startup.ConfigureContainer);
+
+            var app = builder.Build();
+            app.MapDefaultEndpoints();
+            startup.Configure(app, app.Environment);
+            app.Run();
+        }
     }
 }

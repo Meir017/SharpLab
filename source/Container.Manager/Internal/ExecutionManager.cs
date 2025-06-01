@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace SharpLab.Container.Manager.Internal {
     public class ExecutionManager {
@@ -30,6 +32,7 @@ namespace SharpLab.Container.Manager.Internal {
         ) {
             // Note that _containers are never accessed through multiple threads for the same session id,
             // so atomicity is not required within same session id
+            using var activity = SharpLabActivities.Source.StartActivity("Container Execution", ActivityKind.Internal);
             using var allocationCancellation = CancellationFactory.ContainerAllocation(cancellationToken);
             if (_containerPool.GetSessionContainer(sessionId) is not {} container) {
                 if (_crashSuspensionManager.GetSuspension(sessionId) is {} suspension)
@@ -50,6 +53,10 @@ namespace SharpLab.Container.Manager.Internal {
                 isWarmup: false,
                 cancellationToken
             );
+
+            if (!result.IsSuccess) {
+                activity?.SetStatus(ActivityStatusCode.Error, result.FailureMessage.ToString());
+            }
 
             if (container.HasExited())
                 return RemoveContainerAndSetSuspension(sessionId, result);

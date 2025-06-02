@@ -1,6 +1,5 @@
 
 .env
-launchSettings.json
 
 *.user
 *.pubxml
